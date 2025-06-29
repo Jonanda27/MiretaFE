@@ -123,49 +123,80 @@ export default {
 
 <style scoped>
 .paket-irit-container {
-    background-color: rgb(255, 255, 255);
-    width: 1000px;
+  background-color: #fff;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .chart-title {
-    color: black;
-    font-weight: bold;
-    font-size: 18px;
-    padding-left: 0px;
-    margin-bottom: 12px;
-    text-align: center;
+  color: black;
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 12px;
+  text-align: center;
 }
 
 .year-nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 button {
-    background-color: #eee;
-    border: none;
-    font-size: 12px;
-    padding: 6px 12px;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background-color 0.2s;
+  background-color: #eee;
+  border: none;
+  font-size: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s;
 }
 
 button:hover {
-    background-color: #ccc;
+  background-color: #ccc;
 }
 
 .year-label {
-    color: black;
-    font-weight: bold;
-    font-size: 14px;
+  color: black;
+  font-weight: bold;
+  font-size: 14px;
 }
 
 .chart-wrapper {
-    width: 900px;
-    height: 250px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  height: auto;
+  aspect-ratio: 2 / 1; /* Buat proporsional, bisa berubah tergantung layar */
+  position: relative;
+}
+
+/* Fallback untuk browser yang tidak support aspect-ratio */
+@supports not (aspect-ratio: 2 / 1) {
+  .chart-wrapper {
+    height: 300px;
+  }
+}
+
+/* Tambahan untuk perangkat kecil */
+@media (max-width: 768px) {
+  .chart-title {
+    font-size: 16px;
+  }
+
+  button {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  .year-label {
+    font-size: 13px;
+  }
 }
 </style>

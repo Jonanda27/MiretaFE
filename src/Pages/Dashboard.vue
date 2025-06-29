@@ -28,63 +28,60 @@
 
         <div class="table-wrapper">
           <h3 class="table-title">Total Paket dan Varian</h3>
-          <table class="order-table">
-            <thead>
-              <tr>
-                <th>Nama Paket</th>
-                <th>Total Paket</th>
-                <th>Varian Item</th>
-                <th>Total Varian Per Paket</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="paket in paketDetailData" :key="paket.item_name">
-                <td>{{ paket.item_name }}</td>
-                <td>{{ paket.qty }} paket</td>
-
-                <!-- Varian Item Kolom -->
-                <td>
-                  <ul style="margin:0; padding-left: 16px;">
-                    <li v-for="v in paket.varians" :key="v.varian_name">
-                      {{ v.average_qty }} {{ v.varian_name }}
-                    </li>
-
-                  </ul>
-                </td>
-
-                <!-- Total Varian Kolom -->
-                <td>
-                  <ul style="margin:0; padding-left: 16px;">
-                    <li v-for="v in paket.varians" :key="v.varian_name">
-                      {{ v.original_qty }} {{ v.varian_name }}
-                    </li>
-
-                  </ul>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-scroll">
+            <table class="order-table">
+              <thead>
+                <tr>
+                  <th>Nama Paket</th>
+                  <th>Total Paket</th>
+                  <th>Varian Item</th>
+                  <th>Total Varian Per Paket</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="paket in paketDetailData" :key="paket.item_name">
+                  <td>{{ paket.item_name }}</td>
+                  <td>{{ paket.qty }} paket</td>
+                  <td>
+                    <ul>
+                      <li v-for="v in paket.varians" :key="v.varian_name">
+                        {{ v.average_qty }} {{ v.varian_name }}
+                      </li>
+                    </ul>
+                  </td>
+                  <td>
+                    <ul>
+                      <li v-for="v in paket.varians" :key="v.varian_name">
+                        {{ v.original_qty }} {{ v.varian_name }}
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
+
 
         <div class="table-wrapper">
           <h3 class="table-title3">Total Seluruh Varian</h3>
-          <table class="order-table">
-            <thead>
-              <tr>
-                <th>Varian Item</th>
-                <th>Total Varian</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="v in totalVarianSummary" :key="v.varian_name">
-                <td>{{ v.varian_name }}</td>
-                <td>{{ v.total_qty }} pcs</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-scroll">
+            <table class="order-table">
+              <thead>
+                <tr>
+                  <th>Varian Item</th>
+                  <th>Total Varian</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="v in totalVarianSummary" :key="v.varian_name">
+                  <td>{{ v.varian_name }}</td>
+                  <td>{{ v.total_qty }} pcs</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-
-
 
       </div>
 
@@ -248,6 +245,12 @@ body,
   width: 100%;
 }
 
+.table-scroll {
+  overflow-x: auto;
+  width: 100%;
+}
+
+
 .app-container {
   display: flex;
   height: 240vw;
@@ -318,10 +321,9 @@ body,
 } */
 
 .order-table {
-  width: 150vh;
-  /* atau sesuaikan sesuai kebutuhan */
+  width: 100%;
   border-collapse: collapse;
-  font-size: 15px;
+  font-size: 1rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
 }
 
@@ -329,10 +331,10 @@ body,
 .order-table th,
 .order-table td {
   border: 1px solid #ddd;
-  padding: 14px 18px;
+  padding: 14px 16px;
   text-align: left;
-  color: #444;
   background-color: #ffffff;
+  color: #444;
 }
 
 .order-table th {
@@ -343,6 +345,18 @@ body,
 .order-table tbody tr:hover {
   background-color: #f9f9f9;
   align-items: center;
+}
+
+@media (max-width: 768px) {
+  .order-table {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-table {
+    font-size: 0.8rem;
+  }
 }
 
 .tables-row {
@@ -389,10 +403,10 @@ body,
 }
 
 .table-wrapper {
-  display: flex;
-  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
-
 .order-table td ul {
   list-style-type: disc;
   padding-left: 20px;

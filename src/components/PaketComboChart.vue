@@ -111,64 +111,90 @@ export default {
 
 <style scoped>
 .paket-irit-container {
-    background-color: rgb(255, 255, 255);
-    width: 1000px;
-    margin-left: 0px;
+  background-color: rgb(255, 255, 255);
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .chart-title {
-    color: black;
-    font-weight: bold;
-    font-size: 18px;
-    padding-right: 140px;
-    margin-bottom: 12px;
+  color: black;
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 12px;
 }
 
 .year-nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 button {
-    background-color: #eee;
-    border: none;
-    font-size: 12px;
-    padding: 6px 12px;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background-color 0.2s;
+  background-color: #eee;
+  border: none;
+  font-size: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s;
 }
 
 button:hover {
-    background-color: #ccc;
+  background-color: #ccc;
 }
 
 .year-label {
-    color: black;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-
-.chart-placeholder {
-    border-radius: 4px;
-    padding: 5px;
-}
-
-/*Irit*/
-
-.chart-title {
-    padding-left: 15%;
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
+  color: black;
+  font-weight: bold;
+  font-size: 14px;
 }
 
 .chart-wrapper {
-    width: 900px;
-    height: 250px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  height: auto;
+  aspect-ratio: 2 / 1; /* Responsive height via aspect ratio */
+  position: relative;
+}
+
+/* Untuk fallback jika browser belum mendukung aspect-ratio */
+@supports not (aspect-ratio: 2 / 1) {
+  .chart-wrapper {
+    height: 300px;
+  }
+}
+
+/* Responsive adjustments for small screens */
+@media (max-width: 768px) {
+  .chart-title {
+    font-size: 16px;
+    padding-left: 0;
+  }
+
+  .chart-wrapper {
+    max-width: 100%;
+  }
+
+  .year-nav {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  button {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  .year-label {
+    font-size: 13px;
+  }
 }
 </style>
