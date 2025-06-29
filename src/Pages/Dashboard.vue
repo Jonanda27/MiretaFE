@@ -1,14 +1,15 @@
 <template>
   <div class="app-container">
-    <Sidebar />
+    <Sidebar v-if="isSidebarOpen" :isOpen="isSidebarOpen" @close="isSidebarOpen = false" />
 
-    <div class="main-content">
-      <Navbar />
+    <div class="main-content" :class="{ 'sidebar-hidden': !isSidebarOpen }">
+      <Navbar @toggle-sidebar="toggleSidebar" />
+
 
       <!-- area isi dashboard -->
       <div class="dashboard-content">
         <!-- Judul -->
-        <div class="dashboard-title">
+        <div class="dashboard-title" :class="{ 'sidebar-hidden': !isSidebarOpen }">
           <h1>FORECASTING</h1>
           <p class="subtitle">Mireta Backoffice</p>
         </div>
@@ -21,11 +22,8 @@
           <PaketKeluargaChart />
         </div>
         <PaketKhasduoChart />
-
       </div>
-      <div class="tables-row">
-
-
+      <div class="tables-row" :class="{ 'sidebar-hidden': !isSidebarOpen }">
         <div class="table-wrapper">
           <h3 class="table-title">Total Paket dan Varian</h3>
           <div class="table-scroll">
@@ -116,6 +114,7 @@ export default {
       varianData: [],
       paketDetailData: [],
       totalVarianSummary: [],
+      isSidebarOpen: false,
     };
   },
   mounted() {
@@ -125,6 +124,9 @@ export default {
     this.fetchVariantSummary();
   },
   methods: {
+    toggleSidebar() {
+      this.isSidebarOpen = !this.isSidebarOpen;
+    },
     async fetchVariantSummary() {
       try {
         const response = await fetch("http://127.0.0.1:8000/api/variant-summary");
@@ -243,6 +245,7 @@ body,
   padding: 0;
   height: 100%;
   width: 100%;
+  background-color: #F3F5FB;
 }
 
 .table-scroll {
@@ -253,22 +256,27 @@ body,
 
 .app-container {
   display: flex;
-  height: 240vw;
   width: 98.8vw;
   background-color: #F4F4F4;
   /* untuk cegah scroll horizontal kalau ada */
 }
 
 .main-content {
-
   flex: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
   background-color: #F3F5FB;
-  /* Jaga-jaga kalau warna gelap berasal dari konten di sini */
+  transition: margin-left 0.3s ease;
+  margin-left: 45vh;
 }
+
+.main-content.sidebar-hidden {
+  margin-left: 0vh;
+}
+
+
 
 #app {
   margin: 0;
@@ -276,15 +284,21 @@ body,
 }
 
 /* Paket Irit */
+
 .dashboard-content {
   padding: 20px;
-  margin-left: 50vh;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  /* jarak antar‐elemen */
-  /* Hapus margin‑left yang sebelumnya menggeser semuanya */
 }
+
+
+/* Navbar fix */
+.navbar {
+  z-index: 1000;
+  position: relative;
+}
+
 
 /* —— judul —— */
 .dashboard-title h1 {
@@ -293,6 +307,10 @@ body,
   font-weight: 900;
   color: black;
   display: inline-block;
+}
+
+.dashboard-title.sidebar-hidden {
+  margin-left: 0vh;
 }
 
 .dashboard-title .subtitle {
@@ -360,13 +378,20 @@ body,
 }
 
 .tables-row {
-  margin-left: 295px;
+  margin-left: 3.5vh;
+  margin-right: 3vh;
+  margin-bottom: 10px;
   display: flex;
-  gap: 50px;
+  gap: 25px;
   justify-content: center;
   margin-top: 20px;
   flex-wrap: wrap;
   /* agar responsif di layar kecil */
+}
+
+.tables-row.sidebar-hidden {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .table-title {
@@ -407,6 +432,7 @@ body,
   max-width: 100%;
   box-sizing: border-box;
 }
+
 .order-table td ul {
   list-style-type: disc;
   padding-left: 20px;

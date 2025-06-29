@@ -44,71 +44,92 @@ export default {
   },
   computed: {
     processedChartData() {
-      const sortedData = [...this.historyData].sort((a, b) => new Date(a.x) - new Date(b.x));
-      const labels = sortedData.map(d => d.x);
-      const lastIndex = sortedData.length - 1;
+      const sorted = [...this.historyData].sort((a, b) => new Date(a.x) - new Date(b.x));
+      const labels = sorted.map(d => d.x);
 
-      const historyDataset = sortedData.map((d, i) => {
-        if (i === lastIndex && (this.year === 2025 || this.year === 'All')) {
-          return null; // exclude from blue line
+      const historyPoints = sorted.map(d => d.source === 'history' ? d.y : null);
+      const forecastPoints = sorted.map(d => d.source === 'forecast' ? d.y : null);
+
+      // Ambil titik terakhir dari history dan pertama dari forecast
+      const lastHistory = [...sorted].reverse().find(d => d.source === 'history');
+      const firstForecast = sorted.find(d => d.source === 'forecast');
+
+      // Dataset untuk forecast line (dua titik)
+      let forecastLine = labels.map(() => null);
+      if (lastHistory && firstForecast) {
+        const lastIdx = labels.indexOf(lastHistory.x);
+        const firstIdx = labels.indexOf(firstForecast.x);
+        if (lastIdx !== -1 && firstIdx !== -1) {
+          forecastLine[lastIdx] = lastHistory.y;
+          forecastLine[firstIdx] = firstForecast.y;
         }
-        return d.y;
-      });
-
-      const forecastDataset = sortedData.map((d, i) => {
-        if (i === lastIndex && (this.year === 2025 || this.year === 'All')) {
-          return d.y; // only show last point in yellow
-        }
-        return null;
-      });
-
-      const forecastLine = sortedData.map((d, i) =>
-        (this.year === 2025 || this.year === 'All') && (i === lastIndex - 1 || i === lastIndex)
-          ? d.y
-          : null
-      );
+      }
 
       return {
         labels,
         datasets: [
           {
             label: "Data History",
-            data: historyDataset,
+            data: historyPoints,
             borderColor: "rgba(102, 102, 255, 1)",
             backgroundColor: "rgba(102, 102, 255, 1)",
             pointBackgroundColor: "rgba(102, 102, 255, 1)",
             fill: false,
-            tension: 0.3
+            tension: 0.3,
+            spanGaps: true,
+            datalabels: {
+              display: true,
+              color: '#000',
+              align: 'top',
+              anchor: 'end',
+              font: {
+                weight: 'bold',
+                size: 10
+              },
+              formatter: value => value ?? ''
+            }
           },
           {
-            label: "Titik Forecast",
-            data: forecastDataset,
-            borderColor: "transparent",
+            label: "Forecast",
+            data: forecastPoints,
+            borderColor: "yellow",
             backgroundColor: "yellow",
             pointBackgroundColor: "yellow",
-            pointRadius: 6,
             fill: false,
-            showLine: false
+            tension: 0.3,
+            spanGaps: true,
+            datalabels: {
+              display: true,
+              color: '#000',
+              align: 'top',
+              anchor: 'end',
+              font: {
+                weight: 'bold',
+                size: 10
+              },
+              formatter: value => value ?? ''
+            }
           },
           {
             label: "Forecast Line",
             data: forecastLine,
             borderColor: "yellow",
-            backgroundColor: "transparent",
-            pointBackgroundColor: "transparent",
             borderDash: [5, 5],
             fill: false,
             tension: 0.3,
             pointRadius: 0,
             pointHoverRadius: 0,
+            backgroundColor: "transparent",
+            pointBackgroundColor: "transparent",
             datalabels: {
-              display: false
+              display: false // ⛔ jangan tampilkan label untuk garis forecast penghubung
             }
           }
         ]
       };
+
     }
-    
+
   },
   data() {
     return {
@@ -130,15 +151,7 @@ export default {
             enabled: true
           },
           datalabels: {
-            display: true,
-            color: '#000',
-            align: 'top',
-            anchor: 'end',
-            font: {
-              weight: 'bold',
-              size: 10
-            },
-            formatter: value => value ?? ''
+            display: false // ⛔ tidak menampilkan angka di atas titik
           }
         },
         scales: {

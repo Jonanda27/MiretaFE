@@ -1,17 +1,11 @@
 <template>
   <nav class="navbar">
     <div class="navbar-left">
+      <button class="sidebar-toggle" @click="$emit('toggle-sidebar')">
+        ☰
+      </button>
       <img src="/images/logo.png" alt="Mireta Logo" class="logo" />
-      <span class="brand-text">Mireta POS</span>
     </div>
-
-    <!-- Bagian ini bisa aktif kalau kamu mau pakai profile info di layar besar -->
-    <!-- <div class="navbar-right">
-      <div class="profile-info">
-        <span class="profile-name">John Doe</span>
-        <img class="profile-avatar" src="https://i.pravatar.cc/40" alt="Profile" />
-      </div>
-    </div> -->
   </nav>
 </template>
 
@@ -33,7 +27,8 @@
   border-bottom: 1px solid #ccc;
 
   box-sizing: border-box;
-  flex-wrap: wrap; /* Tambahkan agar konten bisa melipat di layar kecil */
+  flex-wrap: wrap;
+  /* Tambahkan agar konten bisa melipat di layar kecil */
 }
 
 /* Responsif logo dan teks merek */
@@ -49,14 +44,16 @@
   color: #f26a4b;
   font-size: 14px;
   text-transform: lowercase;
-  white-space: nowrap; /* Hindari pecah teks */
+  white-space: nowrap;
+  /* Hindari pecah teks */
 }
 
 .navbar-left {
   display: flex;
   align-items: center;
   flex: 1;
-  min-width: 0; /* Hindari overflow */
+  min-width: 0;
+  /* Hindari overflow */
 }
 
 /* Responsif bagian kanan navbar jika digunakan nanti */
@@ -91,5 +88,15 @@
   margin-left: 10px;
   font-size: 18px;
   cursor: pointer;
+}
+
+.sidebar-toggle {
+  font-size: 24px;
+  margin-right: 10px;
+  background: none;
+  border: none;
+  color: #f26a4b;
+  cursor: pointer;
+  display: inline-block;
 }
 </style>

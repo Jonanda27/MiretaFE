@@ -23,36 +23,30 @@ export default {
         return {
             preprocessData: [],
             forecastData: [],
-            forecastPoint: null,
             currentYear: 2022
         };
     },
     computed: {
-        showForecast() {
-            return this.currentYear === 2025 || this.currentYear === 'All';
-        },
         mergedData() {
-            const combined = this.showForecast
-                ? [...this.preprocessData, ...this.forecastData]
-                : this.preprocessData;
-            return combined.sort((a, b) => dayjs(a.x).isAfter(dayjs(b.x)) ? 1 : -1);
+            const all = [...this.preprocessData, ...this.forecastData];
+            return all.sort((a, b) => dayjs(a.x).isAfter(dayjs(b.x)) ? 1 : -1);
         },
         filteredData() {
-            if (this.currentYear === 'All') return this.mergedData;
-            return this.mergedData.filter(item => dayjs(item.x).year() === this.currentYear);
+            const all = [
+                ...this.preprocessData.map(item => ({ ...item, source: 'history' })),
+                ...this.forecastData.map(item => ({ ...item, source: 'forecast' }))
+            ];
+
+            if (this.currentYear === 'All') return all;
+
+            return all.filter(item =>
+                dayjs(item.x).year() === this.currentYear
+            );
         }
     },
     mounted() {
         this.fetchPreprocessData();
-    },
-    watch: {
-        currentYear(newVal) {
-            if (newVal === 2025 || newVal === 'All') {
-                this.fetchForecastData();
-            } else {
-                this.forecastData = [];
-            }
-        }
+        this.fetchForecastData(); // <-- fetch forecast on mount
     },
     methods: {
         showAllData() {
@@ -83,9 +77,14 @@ export default {
             try {
                 const response = await fetch("http://127.0.0.1:8000/api/forecast-detail2");
                 const result = await response.json();
-                if (result.status === "success") {
+                if (result.success || result.status === "success") {
                     this.forecastData = result.data
-                        .filter(item => item.item_name && item.item_name.toUpperCase() === "PAKET KELUARGA")
+                        .filter(item =>
+                            item.item_name &&
+                            item.item_name.toUpperCase() === "PAKET KELUARGA" &&
+                            item.id_forecast >= 4 &&
+                            item.id_forecast <= 4
+                        )
                         .map(item => ({
                             x: dayjs(item.forecast_date).format("YYYY-MM-DD"),
                             y: item.qty
@@ -101,15 +100,11 @@ export default {
             } else if (this.currentYear === 2023) {
                 this.currentYear = 2024;
             } else if (this.currentYear === 2024) {
-                this.currentYear = 2025;
-            } else if (this.currentYear === 2025) {
                 this.currentYear = 'All';
             }
         },
         prevYear() {
             if (this.currentYear === 'All') {
-                this.currentYear = 2025;
-            } else if (this.currentYear === 2025) {
                 this.currentYear = 2024;
             } else if (this.currentYear === 2024) {
                 this.currentYear = 2023;
@@ -121,82 +116,85 @@ export default {
 };
 </script>
 
+
+
 <style scoped>
 .paket-irit-container {
-  background-color: #fff;
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 16px;
-  box-sizing: border-box;
+    background-color: #fff;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 16px;
+    box-sizing: border-box;
 }
 
 .chart-title {
-  color: black;
-  font-weight: bold;
-  font-size: 18px;
-  margin-bottom: 12px;
-  text-align: center;
+    color: black;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 12px;
+    text-align: center;
 }
 
 .year-nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 button {
-  background-color: #eee;
-  border: none;
-  font-size: 12px;
-  padding: 6px 12px;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: background-color 0.2s;
+    background-color: #eee;
+    border: none;
+    font-size: 12px;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s;
 }
 
 button:hover {
-  background-color: #ccc;
+    background-color: #ccc;
 }
 
 .year-label {
-  color: black;
-  font-weight: bold;
-  font-size: 14px;
+    color: black;
+    font-weight: bold;
+    font-size: 14px;
 }
 
 .chart-wrapper {
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  height: auto;
-  aspect-ratio: 2 / 1; /* Buat proporsional, bisa berubah tergantung layar */
-  position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    height: auto;
+    aspect-ratio: 2 / 1;
+    /* Buat proporsional, bisa berubah tergantung layar */
+    position: relative;
 }
 
 /* Fallback untuk browser yang tidak support aspect-ratio */
 @supports not (aspect-ratio: 2 / 1) {
-  .chart-wrapper {
-    height: 300px;
-  }
+    .chart-wrapper {
+        height: 300px;
+    }
 }
 
 /* Tambahan untuk perangkat kecil */
 @media (max-width: 768px) {
-  .chart-title {
-    font-size: 16px;
-  }
+    .chart-title {
+        font-size: 16px;
+    }
 
-  button {
-    font-size: 11px;
-    padding: 5px 10px;
-  }
+    button {
+        font-size: 11px;
+        padding: 5px 10px;
+    }
 
-  .year-label {
-    font-size: 13px;
-  }
+    .year-label {
+        font-size: 13px;
+    }
 }
 </style>

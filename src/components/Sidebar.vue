@@ -1,57 +1,103 @@
-<!-- src/components/Sidebar.vue -->
 <template>
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <img class="user-avatar" src="/images/user2.png" alt="User Avatar" />
-            <p class="store-name">PEMPEK DUO</p>
-            <p class="owner-role">BUSINESS OWNER</p>
-        </div>
-        <ul class="nav-menu">
-            <li>Dashboard</li>
-            <li>Report</li>
-            <li>Transactions</li>
-            <li>Inventory</li>
-            <li>Operational</li>
-            <li class="active">Forecasting</li>
-        </ul>
-    </aside>
+    <div>
+        <!-- Overlay untuk layar kecil -->
+        <div class="sidebar-overlay" v-if="isOpen" @click="$emit('close')"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" :class="{ open: isOpen }">
+            <!-- Tombol close hanya tampil di mobile -->
+            <button class="close-btn" @click="$emit('close')">✕</button>
+
+            <div class="sidebar-header">
+                <img class="user-avatar" src="/images/user2.png" alt="User Avatar" />
+                <p class="store-name">PEMPEK DUO</p>
+                <p class="owner-role">BUSINESS OWNER</p>
+            </div>
+
+            <ul class="nav-menu">
+                <li>Dashboard</li>
+                <li>Report</li>
+                <li>Transactions</li>
+                <li>Inventory</li>
+                <li>Operational</li>
+                <li class="active">Forecasting</li>
+            </ul>
+        </aside>
+    </div>
 </template>
 
 <script>
 export default {
-    name: 'Sidebar',
+    name: "Sidebar",
+    props: {
+        isOpen: {
+            type: Boolean,
+            default: false,
+        },
+    },
 };
 </script>
 
 <style scoped>
-.brand-logo {
-    width: 170px;
-    height: auto;
-    margin-bottom: 10px;
+/* Base Sidebar */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 270px;
+    background: white;
+    z-index: 999;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
 }
 
-.sidebar {
+.sidebar.open {
+    transform: translateX(0);
+}
+
+/* Overlay gelap */
+.sidebar-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 270px;
     height: 100vh;
-    overflow-y: auto;
-    z-index: 1000;
-    background-color: #fff;
+    width: 100vw;
+    z-index: 1100;
 }
 
+/* Tombol close */
+.close-btn {
+    display: block;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+}
+
+
+@media (max-width: 768px) {
+    .close-btn {
+        display: block;
+    }
+}
+
+/* Sidebar content */
 .sidebar-header {
     margin-bottom: 40px;
     text-align: center;
+    margin-top: 75px;
 }
 
-.brand {
-    font-size: 28px;
-    margin: 0;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    color: #ff6584;
+.user-avatar {
+    width: 65px;
+    height: auto;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .store-name {
@@ -69,10 +115,8 @@ export default {
 
 .nav-menu {
     list-style: none;
-    color: #000000;
     padding: 0;
     margin: 0;
-    flex-grow: 1;
 }
 
 .nav-menu li {
@@ -81,6 +125,7 @@ export default {
     border-radius: 6px;
     cursor: pointer;
     user-select: none;
+    color: #000000;
     transition: background-color 0.3s ease;
 }
 
@@ -89,20 +134,5 @@ export default {
     background-color: #ff6584;
     color: #fff;
     font-weight: 700;
-}
-
-.brand-logo {
-    width: 170px;
-    height: auto;
-    margin-bottom: 10px;
-}
-
-.user-avatar {
-    margin-top: 75px;
-    width: 65px;
-    height: auto;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 0px;
 }
 </style>
